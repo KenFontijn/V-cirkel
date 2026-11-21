@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="V-Cirkel Toets">
+<meta name="theme-color" content="#C8651A">
+<title>V-Cirkel Toets</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+:root {
+  --orange: #C8651A;
+  --orange-light: #F5E8D8;
+  --bg: #FAFAF8;
+  --surface: #FFFFFF;
+  --surface2: #F4F2EE;
+  --text: #1A1A18;
+  --text2: #5A5A54;
+  --text3: #9A9A90;
+  --border: rgba(0,0,0,0.10);
+  --radius: 12px;
+  --good: #1A5A1A;
+  --good-bg: #E3F0E3;
+  --bad: #A03010;
+  --bad-bg: #F8E2DB;
+  --mid: #8A5A00;
+  --mid-bg: #F7EBC4;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+html, body { background: var(--bg); font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif; color: var(--text); -webkit-text-size-adjust: 100%; }
+body { min-height: 100vh; }
+button { font: inherit; color: inherit; border: none; background: none; cursor: pointer; text-align: left; -webkit-appearance: none; appearance: none; }
+a { color: inherit; text-decoration: none; }
+.wrap { max-width: 640px; margin: 0 auto; padding-bottom: calc(40px + var(--safe-bottom)); }
+
+.header { background: var(--surface); border-bottom: 0.5px solid var(--border); padding: calc(16px + env(safe-area-inset-top, 0px)) 20px 12px; position: sticky; top: 0; z-index: 10; }
+.header-logo { display: flex; align-items: center; gap: 10px; }
+.logo-dot { width: 28px; height: 28px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+.hl { flex: 1; min-width: 0; }
+.header h1 { font-size: 20px; font-weight: 600; }
+.header p { font-size: 13px; color: var(--text2); margin-top: 2px; }
+.applink { font-size: 12px; font-weight: 600; color: var(--orange); background: var(--orange-light); padding: 6px 12px; border-radius: 16px; }
+
+.content { padding: 16px; }
+.card { background: var(--surface); border-radius: var(--radius); border: 0.5px solid var(--border); margin-bottom: 12px; overflow: hidden; }
+.pad { padding: 14px 16px; }
+.sec-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.sub { font-size: 12px; color: var(--text3); line-height: 1.4; }
+.lbl { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); margin: 14px 0 6px; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; }
+.chip { flex-shrink: 0; padding: 6px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); font-size: 13px; font-weight: 500; color: var(--text2); }
+.chip.on { background: var(--orange); border-color: var(--orange); color: #fff; }
+.chip.num { min-width: 38px; text-align: center; padding: 6px 0; }
+.toggle { display: flex; align-items: center; gap: 10px; margin-top: 14px; font-size: 14px; color: var(--text2); }
+.toggle input { width: 20px; height: 20px; accent-color: var(--orange); }
+.btn { display: block; width: 100%; margin-top: 16px; padding: 15px; background: var(--orange); color: #fff; font-size: 16px; font-weight: 600; border-radius: 12px; text-align: center; }
+.btn[disabled] { opacity: 0.4; pointer-events: none; }
+.btn.sec { background: var(--surface2); color: var(--text); }
+.btn.line { background: var(--surface); border: 1px solid var(--border); color: var(--text); }
+.btn.danger { background: var(--surface); border: 1px solid var(--bad); color: var(--bad); }
+
+.banner { margin: 12px 16px 0; padding: 10px 14px; border-radius: 10px; font-size: 13px; line-height: 1.45; }
+.banner.warn { background: var(--mid-bg); color: var(--mid); }
+.banner.err { background: var(--bad-bg); color: var(--bad); }
+.banner.ok { background: var(--surface2); color: var(--text2); }
+
+.bar { height: 6px; border-radius: 3px; background: var(--surface2); overflow: hidden; }
+.bar i { display: block; height: 100%; background: var(--orange); border-radius: 3px; }
+.srow { padding: 10px 0; border-bottom: 0.5px solid var(--border); }
+.srow:last-child { border-bottom: none; }
+.srow .top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; gap: 8px; }
+.srow .nm { font-size: 14px; font-weight: 600; }
+.srow .st { font-size: 12px; color: var(--text2); text-align: right; }
+.pill { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 6px; margin-left: 6px; }
+.pill.g { background: var(--good-bg); color: var(--good); }
+.pill.m { background: var(--mid-bg); color: var(--mid); }
+.pill.b { background: var(--bad-bg); color: var(--bad); }
+.pill.n { background: var(--surface2); color: var(--text3); }
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+.tile { background: var(--surface2); border-radius: 10px; padding: 10px 6px; text-align: center; }
+.tile .tn { font-size: 12px; color: var(--text2); font-weight: 600; }
+.tile .tp { font-size: 18px; font-weight: 700; margin: 2px 0; }
+.tile .ts { font-size: 10px; color: var(--text3); }
+.tile.g { background: var(--good-bg); } .tile.g .tp { color: var(--good); }
+.tile.m { background: var(--mid-bg); } .tile.m .tp { color: var(--mid); }
+.tile.b { background: var(--bad-bg); } .tile.b .tp { color: var(--bad); }
+.weak { display: flex; align-items: center; gap: 10px; width: 100%; padding: 10px 0; border-bottom: 0.5px solid var(--border); }
+.weak:last-child { border-bottom: none; }
+.weak .wn { flex: 1; font-size: 14px; font-weight: 600; }
+.weak .ws { font-size: 12px; color: var(--text2); }
+.weak .go { font-size: 12px; font-weight: 600; color: var(--orange); }
+.hard { padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; color: var(--text2); line-height: 1.4; }
+.hard:last-child { border-bottom: none; }
+.hard b { color: var(--bad); }
+details summary { font-size: 14px; font-weight: 600; cursor: pointer; padding: 14px 16px; list-style: none; }
+details summary::-webkit-details-marker { display: none; }
+details .dbody { padding: 0 16px 14px; }
+.note { font-size: 13px; color: var(--text2); line-height: 1.5; padding: 6px 0 6px 14px; position: relative; }
+.note::before { content: "·"; position: absolute; left: 0; color: var(--orange); font-weight: bold; font-size: 16px; line-height: 1.2; }
+
+.qhead .qtop { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+.qhead .x { font-size: 13px; font-weight: 600; color: var(--text2); background: var(--surface2); padding: 6px 12px; border-radius: 16px; }
+.qhead .qc { font-size: 14px; font-weight: 600; }
+.qhead .qs { font-size: 13px; color: var(--good); font-weight: 600; min-width: 60px; text-align: right; }
+.qtag { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--orange); margin-bottom: 8px; }
+.qtext { font-size: 17px; font-weight: 600; line-height: 1.4; }
+.qquote { margin-top: 12px; background: var(--orange-light); border-radius: 8px; padding: 12px 14px; font-size: 14px; line-height: 1.5; font-style: italic; }
+.opts { margin-top: 4px; }
+.opt { display: flex; gap: 12px; align-items: flex-start; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 10px; font-size: 15px; line-height: 1.4; min-height: 52px; }
+.opt .olet { flex: 0 0 26px; height: 26px; border-radius: 50%; background: var(--surface2); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; color: var(--text2); }
+.opt:active { background: var(--surface2); }
+.opt.good { border-color: var(--good); background: var(--good-bg); }
+.opt.good .olet { background: var(--good); color: #fff; }
+.opt.bad { border-color: var(--bad); background: var(--bad-bg); }
+.opt.bad .olet { background: var(--bad); color: #fff; }
+.opt.dim { opacity: 0.55; }
+.opts.locked .opt { pointer-events: none; }
+.fb { border-radius: 12px; padding: 14px 16px; margin-top: 4px; }
+.fb.good { background: var(--good-bg); }
+.fb.bad { background: var(--bad-bg); }
+.fb .fh { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+.fb.good .fh { color: var(--good); }
+.fb.bad .fh { color: var(--bad); }
+.fb .fa { font-size: 14px; line-height: 1.5; margin-bottom: 8px; }
+.fb .fc { font-size: 13px; line-height: 1.5; color: var(--text2); border-top: 0.5px solid var(--border); padding-top: 8px; margin-top: 8px; }
+.fb .fc b { color: var(--text); }
+.big { font-size: 40px; font-weight: 700; color: var(--orange); }
+.miss { padding: 10px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; line-height: 1.45; }
+.miss:last-child { border-bottom: none; }
+.miss .mq { color: var(--text2); }
+.miss .ma { font-weight: 600; color: var(--good); margin-top: 2px; }
+.center { text-align: center; }
+.tile.sel { outline: 2px solid var(--orange); outline-offset: -2px; }
+.irow { margin-bottom: 12px; }
+.il { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text3); margin-bottom: 4px; }
+.inp { width: 100%; font-size: 16px; padding: 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--surface); color: var(--text); outline: none; -webkit-appearance: none; appearance: none; }
+.inp:focus { border-color: var(--orange); }
+.inp.good { border-color: var(--good); background: var(--good-bg); }
+.inp.bad { border-color: var(--bad); background: var(--bad-bg); }
+.igood { font-size: 13px; font-weight: 600; color: var(--good); margin-top: 4px; }
+.slots { margin-bottom: 12px; }
+.slot { display: block; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; margin-bottom: 8px; }
+.slot.act { border-color: var(--orange); box-shadow: 0 0 0 2px var(--orange-light); }
+.slot.good { border-color: var(--good); background: var(--good-bg); }
+.slot.bad { border-color: var(--bad); background: var(--bad-bg); }
+.slot .sl { display: block; font-size: 12px; color: var(--text2); line-height: 1.35; margin-bottom: 4px; }
+.slot .sv { display: block; font-size: 15px; font-weight: 600; min-height: 20px; }
+.slot .ph { font-weight: 400; color: var(--text3); font-size: 13px; }
+.bank { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+.bword { padding: 10px 14px; border-radius: 20px; border: 1px solid var(--border); background: var(--surface); font-size: 14px; font-weight: 500; }
+.bword.used { opacity: 0.3; pointer-events: none; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.two .btn { margin-top: 0; text-align: center; }
+.btn.good2 { background: var(--good); }
+.btn.bad2 { background: var(--bad); }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"><div class="content"><div class="card pad center"><p class="sub">Laden...</p></div></div></div>
+<noscript><div style="padding:20px">Deze toets heeft JavaScript nodig.</div></noscript>
+
+<script>
+(function () {
+'use strict';
+
+/* ============================================================
+   Instellingen
+   ============================================================ */
+var APP_URL = 'index.html';
+var STORE_KEY = 'vcirkel-toets-v1';
+var DATA_KEY = 'vcirkel-toets-data-v1';
+
+var TABS = [
+  { k: 'vcirkel', n: 'V-Cirkel' },
+  { k: 'polariteiten', n: 'Polariteiten' },
+  { k: 'kenmerken', n: 'Kenmerken' },
+  { k: 'kwadranten', n: 'Kwadranten' },
+  { k: 'coaching', n: 'Coaching' }
+];
+var CENTRA_KEYS = ['Buik', 'Hart', 'Hoofd'];
+/* Vraagsoorten (wat wordt er gevraagd) */
+var GROUPS = [
+  { k: 'std', n: 'Gewone vragen' },
+  { k: 'who', n: 'Welk type of centrum is dit?' },
+  { k: 'match', n: 'Koppelen' },
+  { k: 'fill', n: 'Kwadranten invullen' }
+];
+/* Antwoordvormen (hoe antwoord je) */
+var FORMS = [
+  { k: 'auto', n: 'Automatisch oplopend' },
+  { k: 'mc', n: 'Meerkeuze' },
+  { k: 'typed', n: 'Typen' },
+  { k: 'flip', n: 'Open met kaartje' }
+];
+var FORM_HELP = {
+  auto: 'Nieuwe of foute vragen krijg je als meerkeuze (of woordenbank). Na een goed antwoord wordt het zwaarder: eerst typen, later open met kaartje. Fout? Dan weer de makkelijkste vorm.',
+  mc: 'Altijd kiezen uit antwoorden (bij kwadranten invullen: woorden kiezen uit een woordenbank).',
+  typed: 'Altijd zelf typen. Hoofdletters en spaties maken niet uit, de rest moet exact kloppen.',
+  flip: 'Eerst zelf bedenken, dan het kaartje omdraaien en zelf beoordelen of je het wist.'
+};
+var MODE_LABEL = { mc: 'Meerkeuze', typed: 'Typen', flip: 'Open vraag', sb: 'Woordenbank', ft: 'Invullen', match: 'Koppelen' };
+var VK = ['verslaving', 'verleiding', 'vermijding', 'verdediging'];
+var VN = { verslaving: 'Verslaving', verleiding: 'Verleiding', vermijding: 'Vermijding', verdediging: 'Verdediging' };
+var SECS = [
+  { key: 'basis', label: 'Basispolariteiten' },
+  { key: 'kk', label: 'Kernkwaliteiten' },
+  { key: 'vc', label: 'Uit de V-cirkel' },
+  { key: 'themas', label: "Typegebonden thema's" }
+];
+var KWF = [['vk', 'Valkuil'], ['al', 'Allergie'], ['ud', 'Uitdaging']];
+var KWL = { kk: 'Kernkwaliteit', vk: 'Valkuil', al: 'Allergie', ud: 'Uitdaging' };
+/* Leitner: gewicht per doos (0 = nog nooit gezien). Fout = doos 1. */
+var BOXW = { 0: 3, 1: 6, 2: 3, 3: 1.6, 4: 0.8, 5: 0.35 };
+var MASTERED_BOX = 4;
+
+/* ============================================================
+   Hulpfuncties
+   ============================================================ */
+function esc(s) {
+  return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+  });
+}
+function shuffle(a) {
+  a = a.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function uniq(a, ex) {
+  var seen = {}, r = [];
+  (ex || []).forEach(function (x) { seen[x] = 1; });
+  (a || []).forEach(function (x) {
+    if (x == null || x === '') return;
+    if (!seen[x]) { seen[x] = 1; r.push(x); }
+  });
+  return r;
+}
+function countBy(arr, fn) {
+  var o = {};
+  arr.forEach(function (x) { var k = fn(x); o[k] = (o[k] || 0) + 1; });
+  return o;
+}
+function trunc(s, n) { s = String(s || ''); return s.length > n ? s.slice(0, n - 1) + '...' : s; }
+function pct(x) { return Math.round(x * 100); }
+function findBy(arr, fn) { for (var i = 0; i < (arr || []).length; i++) if (fn(arr[i])) return arr[i]; return null; }
+function toggleIn(arr, v) { var i = arr.indexOf(v); if (i < 0) arr.push(v); else arr.splice(i, 1); }
+function rnd(a) { return a[Math.floor(Math.random() * a.length)]; }
+
+/* ============================================================
+   Opslag (localStorage met veilige terugval)
+   ============================================================ */
+var storageOk = true;
+function lsGet(k) { try { return window.localStorage.getItem(k); } catch (e) { storageOk = false; return null; } }
+function lsSet(k, v) { try { window.localStorage.setItem(k, v); return true; } catch (e) { storageOk = false; return false; } }
+function lsDel(k) { try { window.localStorage.removeItem(k); } catch (e) { storageOk = false; } }
+(function probe() {
+  try { var x = '__probe'; window.localStorage.setItem(x, '1'); window.localStorage.removeItem(x); }
+  catch (e) { storageOk = false; }
+})();
+
+function freshPrefs() {
+  return { tabs: [], centra: [], types: [], kinds: [], form: 'auto', n: 10, weak: false, ign: false };
+}
+function freshState() { return { v: 2, q: {}, p: freshPrefs() }; }
+var ST = freshState();
+function loadState() {
+  var raw = lsGet(STORE_KEY);
+  if (!raw) return;
+  try {
+    var o = JSON.parse(raw);
+    if (o && typeof o === 'object' && o.q && typeof o.q === 'object') {
+      ST = freshState();
+      ST.q = o.q;
+      if (o.p && typeof o.p === 'object') {
+        var d = freshPrefs();
+        Object.keys(d).forEach(function (k) {
+          var v = o.p[k];
+          if (v == null) return;
+          if (Array.isArray(d[k])) { if (Array.isArray(v)) ST.p[k] = v; }
+          else if (typeof v === typeof d[k]) ST.p[k] = v;
+        });
+        if (!findBy(FORMS, function (f) { return f.k === ST.p.form; })) ST.p.form = 'auto';
+      }
+    }
+  } catch (e) { ST = freshState(); }
+}
+function saveState() { if (storageOk) lsSet(STORE_KEY, JSON.stringify(ST)); }
+
+/* ============================================================
+   Data uit index.html halen (geen kopie: de app is de bron)
+   ============================================================ */
+function extractLiteral(src, name) {
+  var m = new RegExp('var\\s+' + name + '\\s*=\\s*').exec(src);
+  if (!m) throw new Error('niet gevonden: ' + name);
+  var start = m.index + m[0].length, i = start;
+  var open = src.charAt(i);
+  if (open !== '[' && open !== '{') throw new Error('geen lijst of object: ' + name);
+  var depth = 0, q = null;
+  for (; i < src.length; i++) {
+    var ch = src.charAt(i);
+    if (q) {
+      if (ch === '\\') i++;
+      else if (ch === q) q = null;
+      continue;
+    }
+    if (ch === "'" || ch === '"' || ch === '`') { q = ch; continue; }
+    if (ch === '/' && src.charAt(i + 1) === '/') { while (i < src.length && src.charAt(i) !== '\n') i++; continue; }
+    if (ch === '/' && src.charAt(i + 1) === '*') { i = src.indexOf('*/', i + 2); if (i < 0) break; i++; continue; }
+    if (ch === '[' || ch === '{') depth++;
+    else if (ch === ']' || ch === '}') { depth--; if (depth === 0) { i++; break; } }
+  }
+  return (new Function('return (' + src.slice(start, i) + ');'))();
+}
+var VARMAP = { TYPES: 'TYPES', POLARITEITEN: 'POL', BASIS_DEFINITIES: 'BASIS', CENTRA: 'CENTRA', KWADRANTEN: 'KW', doseer: 'DOSEER', regels: 'REGELS' };
+function parseApp(src) {
+  var D = { missing: [] };
+  Object.keys(VARMAP).forEach(function (name) {
+    try { D[VARMAP[name]] = extractLiteral(src, name); }
+    catch (e) { D.missing.push(name); }
+  });
+  if (!D.TYPES) throw new Error('TYPES niet gevonden in ' + APP_URL);
+  return D;
+}
+function loadData() {
+  return fetch(APP_URL, { cache: 'no-cache' })
+    .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
+    .then(function (txt) {
+      var D = parseApp(txt);
+      lsSet(DATA_KEY, JSON.stringify({ t: Date.now(), D: D }));
+      return { D: D, src: 'live' };
+    })
+    .catch(function (err) {
+      var c = lsGet(DATA_KEY);
+      if (c) {
+        try { var o = JSON.parse(c); if (o && o.D && o.D.TYPES) return { D: o.D, src: 'cache', t: o.t, err: err }; } catch (e) {}
+      }
+      throw err;
+    });
+}
+
+/* ============================================================
+   Vergelijken van getypte antwoorden
+   Hoofdletters en spaties maken niet uit. Accenten wel, tenzij
+   de gebruiker dat uitzet.
+   ============================================================ */
+function normTxt(s) {
+  s = String(s == null ? '' : s).toLowerCase().replace(/\s+/g, '');
+  if (ST.p.ign && s.normalize) s = s.normalize('NFD').replace(/[̀-ͯ]/g, '');
+  return s;
+}
+function acceptSet(q) {
+  var a = (q.accept || [q.answer]).slice();
+  (q.accept || [q.answer]).forEach(function (x) { var m = /^Type (\d)$/.exec(x); if (m) a.push(m[1]); });
+  return a.map(normTxt);
+}
+
+/* ============================================================
+   Vraaggeneratie uit de data
+   ============================================================ */
+var MG = [], MGMAP = {};
+
+function build(D) {
+  var all = [], ids = {}, skipped = [];
+  MG = []; MGMAP = {};
+  var T = D.TYPES || [];
+  var centrumOf = {};
+  (D.CENTRA || []).forEach(function (c) { (c.types || []).forEach(function (n) { centrumOf[n] = c.key; }); });
+  T.forEach(function (t) { if (!centrumOf[t.num] && t.cat) centrumOf[t.num] = String(t.cat).replace(/type$/i, ''); });
+  function catOf(n) { var t = findBy(T, function (x) { return x.num === n; }); return t ? t.cat : ''; }
+  function typeCrumb(n) { return 'Type ' + n + ' (' + catOf(n) + ')'; }
+  function fixCentra(o) {
+    o.types = o.types || [];
+    o.centra = o.centra || [];
+    o.types.forEach(function (n) { var c = centrumOf[n]; if (c && o.centra.indexOf(c) < 0) o.centra.push(c); });
+  }
+
+  function add(o) {
+    o.grp = o.grp || 'std';
+    o.accept = (o.accept && o.accept.length) ? o.accept : [o.answer];
+    fixCentra(o);
+    o.hard = uniq(o.hard, o.accept);
+    o.dis = uniq(o.dis, o.accept);
+    var nd = uniq(o.hard.concat(o.dis)).length;
+    if (o.opts) nd = o.opts.length - 1;
+    if (ids[o.id]) return;
+    if (o.grp !== 'fill' && nd < (o.binary ? 1 : 2)) { skipped.push({ id: o.id, why: 'te weinig afleiders' }); return; }
+    ids[o.id] = 1;
+    all.push(o);
+  }
+  function skip(id, why) { skipped.push({ id: id, why: why }); }
+
+  /* ---------- V-Cirkel ---------- */
+  T.forEach(function (t) {
+    var others = T.filter(function (x) { return x.num !== t.num; });
+    var typeOpts = others.map(function (x) { return 'Type ' + x.num; });
+    var sameC = others.filter(function (x) { return x.cat === t.cat; }).map(function (x) { return 'Type ' + x.num; });
+    if (t.strategie) {
+      if (T.filter(function (x) { return x.strategie === t.strategie; }).length === 1) {
+        add({ id: 'vc|strat|' + t.num, grp: 'who', fam: 'vc.strat', tab: 'vcirkel', types: [t.num], tag: 'V-Cirkel',
+          q: 'Bij welk type hoort deze overlevingsstrategie?', quote: t.strategie, answer: 'Type ' + t.num,
+          hard: sameC, dis: typeOpts, ctx: ['V-Cirkel · ' + typeCrumb(t.num), 'Overlevingsstrategie'] });
+      } else skip('vc|strat|' + t.num, 'strategie niet uniek');
+    }
+    VK.forEach(function (k) {
+      var v = t[k];
+      if (!v || !v.naam) return;
+      var lower = VN[k].toLowerCase();
+      var crumb = 'V-Cirkel · ' + typeCrumb(t.num);
+      var zinLine = v.zin ? v.zin : '';
+      var sameKind = T.filter(function (x) { return x[k] && x[k].naam === v.naam; }).length;
+      if (sameKind === 1) {
+        add({ id: 'vc|n2t|' + k + '|' + v.naam, grp: 'who', fam: 'vc.n2t', tab: 'vcirkel', types: [t.num], tag: 'V-Cirkel · ' + VN[k],
+          q: 'Bij welk type hoort de ' + lower + ' "' + v.naam + '"?', answer: 'Type ' + t.num,
+          hard: sameC, dis: typeOpts, ctx: [crumb, VN[k] + ': ' + v.naam, zinLine] });
+      } else skip('vc|n2t|' + k + '|' + v.naam, 'naam niet uniek');
+      add({ id: 'vc|t2n|' + k + '|' + t.num, fam: 'vc.t2n', tab: 'vcirkel', types: [t.num], tag: 'V-Cirkel · ' + typeCrumb(t.num),
+        q: 'Wat is de ' + lower + ' van type ' + t.num + '?', answer: v.naam,
+        hard: VK.filter(function (z) { return z !== k && t[z] && t[z].naam; }).map(function (z) { return t[z].naam; }),
+        dis: others.map(function (x) { return x[k] && x[k].naam; }),
+        ctx: [crumb, VN[k] + ': ' + v.naam, zinLine] });
+      if (v.zin) {
+        var zinN = T.filter(function (x) { return x[k] && x[k].zin === v.zin; }).length;
+        if (zinN === 1) {
+          add({ id: 'vc|z2t|' + k + '|' + t.num, grp: 'who', fam: 'vc.z2t', tab: 'vcirkel', types: [t.num], tag: 'V-Cirkel · ' + VN[k],
+            q: 'Bij welk type hoort deze zin van de ' + lower + '?', quote: v.zin, answer: 'Type ' + t.num,
+            hard: sameC, dis: typeOpts, ctx: [crumb, VN[k] + ': ' + v.naam] });
+        } else skip('vc|z2t|' + k + '|' + t.num, 'zin niet uniek');
+      }
+      (v.bullets || []).forEach(function (b) {
+        var inType = 0;
+        VK.forEach(function (z) { if (t[z] && (t[z].bullets || []).indexOf(b) >= 0) inType++; });
+        if (inType !== 1) { skip('vc|b2k|' + t.num + '|' + b, 'herkenningspunt komt vaker voor binnen het type'); return; }
+        var opts = VK.filter(function (z) { return t[z] && t[z].naam; }).map(function (z) { return VN[z] + ' (' + t[z].naam + ')'; });
+        add({ id: 'vc|b2k|' + t.num + '|' + b, fam: 'vc.b2k', tab: 'vcirkel', types: [t.num], tag: 'V-Cirkel · ' + typeCrumb(t.num),
+          q: 'Bij welke V hoort dit herkenningspunt?', quote: b, answer: VN[k] + ' (' + v.naam + ')',
+          accept: [VN[k] + ' (' + v.naam + ')', VN[k]],
+          opts: opts, ctx: [crumb, VN[k] + ': ' + v.naam, zinLine] });
+      });
+    });
+  });
+
+  /* ---------- Polariteiten ---------- */
+  var P = D.POL || {};
+  var pNums = Object.keys(P).map(Number).sort(function (a, b) { return a - b; });
+  SECS.forEach(function (sec) {
+    var allVm = [], allV = [];
+    pNums.forEach(function (n) { (P[n][sec.key] || []).forEach(function (bp) { allVm.push(bp.vm); allV.push(bp.v); }); });
+    var occV = countBy(allV, function (x) { return x; });
+    pNums.forEach(function (n) {
+      var items = P[n][sec.key] || [];
+      var crumb = 'Polariteiten · ' + sec.label + ' · ' + typeCrumb(n);
+      items.forEach(function (bp) {
+        add({ id: 'pol|tp|' + sec.key + '|' + n + '|' + bp.v, fam: 'pol.tp.' + sec.key, tab: 'polariteiten', types: [n],
+          tag: sec.label + ' · Type ' + n, q: 'Wat is de tegenpool (vermijding) van "' + bp.v + '"?', answer: bp.vm,
+          hard: items.map(function (x) { return x.vm; }).filter(function (x) { return x !== bp.vm && x !== bp.v; }),
+          dis: allVm.filter(function (x) { return x !== bp.v; }),
+          ctx: [crumb, bp.v + ' (verleiding) tegenover ' + bp.vm + ' (vermijding)'] });
+        if (sec.key === 'basis') {
+          add({ id: 'pol|side|' + n + '|' + bp.v + '/' + bp.vm, fam: 'pol.side', tab: 'polariteiten', types: [n],
+            tag: sec.label + ' · Type ' + n, binary: true,
+            q: 'Welke kant van het paar "' + [bp.v, bp.vm].sort().join(' / ') + '" is de verleiding van type ' + n + '?',
+            answer: bp.v, dis: [bp.vm], ctx: [crumb, bp.v + ' (verleiding) tegenover ' + bp.vm + ' (vermijding)'] });
+        } else if (occV[bp.v] === 1) {
+          var oth = pNums.filter(function (x) { return x !== n; });
+          add({ id: 'pol|v2t|' + sec.key + '|' + bp.v, grp: 'who', fam: 'pol.v2t.' + sec.key, tab: 'polariteiten', types: [n],
+            tag: sec.label, q: 'Bij welk type hoort "' + bp.v + '" aan de verleidingskant?', answer: 'Type ' + n,
+            hard: oth.filter(function (x) { return centrumOf[x] === centrumOf[n]; }).map(function (x) { return 'Type ' + x; }),
+            dis: oth.map(function (x) { return 'Type ' + x; }),
+            ctx: [crumb, bp.v + ' (verleiding) tegenover ' + bp.vm + ' (vermijding)'] });
+        } else skip('pol|v2t|' + sec.key + '|' + bp.v, 'komt bij meerdere types voor');
+      });
+    });
+  });
+  var B = D.BASIS || {};
+  var bKeys = Object.keys(B);
+  var occL = {};
+  bKeys.forEach(function (K) { (B[K].rijen || []).forEach(function (r) { occL[r.l] = (occL[r.l] || 0) + 1; }); });
+  bKeys.forEach(function (K) {
+    var def = B[K], parts = String(def.titel || '').split(' / '), mirror = parts[1];
+    (def.rijen || []).forEach(function (r) {
+      if (occL[r.l] !== 1) { skip('pol|def|' + K + '|' + r.l, 'herkenningspunt komt bij meerdere polariteiten voor'); return; }
+      add({ id: 'pol|def|' + K + '|' + r.l, fam: 'pol.def', tab: 'polariteiten', types: [], tag: 'Polariteiten · Basispolariteiten',
+        q: 'Bij welke basispolariteit hoort dit herkenningspunt?', quote: r.l, answer: K,
+        hard: mirror ? [mirror] : [], dis: bKeys,
+        ctx: ['Polariteiten · Basispolariteiten · ' + def.titel, 'Tegenpool hiervan: ' + r.r] });
+    });
+  });
+
+  /* ---------- Kenmerken ---------- */
+  var C = D.CENTRA || [];
+  var cKeys = C.map(function (c) { return c.key; });
+  var occO = countBy([].concat.apply([], C.map(function (c) { return c.overt || []; })), function (x) { return x; });
+  var occK = countBy([].concat.apply([], C.map(function (c) { return c.kenm || []; })), function (x) { return x; });
+  C.forEach(function (c) {
+    (c.kenm || []).forEach(function (k) {
+      if (occK[k] !== 1) { skip('ken|k2c|' + k, 'kenmerk staat letterlijk bij meerdere centra'); return; }
+      add({ id: 'ken|k2c|' + k, grp: 'who', fam: 'ken.k2c', tab: 'kenmerken', types: [], centra: [c.key], tag: 'Kenmerken',
+        q: 'Bij welk centrum hoort dit kenmerk?', quote: k, answer: c.key, opts: cKeys.slice(),
+        ctx: ['Kenmerken · ' + (c.titel || c.key), c.kenm_titel || ''] });
+    });
+    (c.overt || []).forEach(function (o) {
+      if (occO[o] !== 1) { skip('ken|o2c|' + o, 'kernovertuiging niet uniek'); return; }
+      add({ id: 'ken|o2c|' + o, grp: 'who', fam: 'ken.o2c', tab: 'kenmerken', types: [], centra: [c.key], tag: 'Kenmerken',
+        q: 'Bij welk centrum hoort deze kernovertuiging?', quote: o, answer: c.key, opts: cKeys.slice(),
+        ctx: ['Kenmerken · ' + (c.titel || c.key), c.overt_titel || ''] });
+    });
+    (c.types || []).forEach(function (n) {
+      add({ id: 'ken|t2c|' + n, grp: 'who', fam: 'ken.t2c', tab: 'kenmerken', types: [n], tag: 'Kenmerken',
+        q: 'Tot welk centrum behoort type ' + n + '?', answer: c.key, opts: cKeys.slice(),
+        ctx: ['Kenmerken · ' + (c.titel || c.key), 'Type ' + n + ' is een ' + catOf(n).toLowerCase()] });
+    });
+  });
+
+  /* ---------- Kwadranten ---------- */
+  function kwLine(r) { return 'Kernkwaliteit: ' + r.kk + ' · Valkuil: ' + r.vk + ' · Allergie: ' + r.al + ' · Uitdaging: ' + r.ud; }
+  function kwQs(rows, idp, types, centra, tagTxt, crumb, otherRows) {
+    rows.forEach(function (r) {
+      KWF.forEach(function (f) {
+        add({ id: idp + '|kk>' + f[0] + '|' + r.kk, fam: 'kw.kk2' + f[0], tab: 'kwadranten', types: types, centra: centra.slice(), tag: tagTxt,
+          q: 'Wat is de ' + f[1].toLowerCase() + ' in het kernkwadrant met kernkwaliteit "' + r.kk + '"?', answer: r[f[0]],
+          hard: rows.filter(function (x) { return x !== r; }).map(function (x) { return x[f[0]]; }),
+          dis: otherRows.map(function (x) { return x[f[0]]; }), ctx: [crumb, kwLine(r)] });
+      });
+      add({ id: idp + '|ud>kk|' + r.ud, fam: 'kw.ud2kk', tab: 'kwadranten', types: types, centra: centra.slice(), tag: tagTxt,
+        q: 'Welke kernkwaliteit hoort in hetzelfde kernkwadrant als de uitdaging "' + r.ud + '"?', answer: r.kk,
+        hard: rows.filter(function (x) { return x !== r; }).map(function (x) { return x.kk; }),
+        dis: otherRows.map(function (x) { return x.kk; }), ctx: [crumb, kwLine(r)] });
+    });
+  }
+  var KW = D.KW || {};
+  var kNums = Object.keys(KW).map(Number).sort(function (a, b) { return a - b; });
+  kNums.forEach(function (n) {
+    var other = [];
+    kNums.forEach(function (m) { if (m !== n) other = other.concat(KW[m]); });
+    kwQs(KW[n], 'kw|' + n, [n], [], 'Kernkwadrant · Type ' + n, 'Kwadranten · ' + typeCrumb(n), other);
+  });
+  C.forEach(function (c) {
+    var other = [];
+    C.forEach(function (d) { if (d !== c) other = other.concat(d.kw || []); });
+    kwQs(c.kw || [], 'kwc|' + c.key, [], [c.key], 'Kernkwadrant · Centrum ' + c.key, 'Kwadranten · Centrum ' + c.key + ' (' + (c.titel || '') + ')', other);
+  });
+
+  /* "Welk type hoort bij dit kernkwadrant?" Bij identieke kwadranten gelden alle types als goed. */
+  var tupT = {}, tupOrder = [];
+  kNums.forEach(function (n) {
+    KW[n].forEach(function (r) {
+      var k = [r.kk, r.vk, r.al, r.ud].join('|');
+      if (!tupT[k]) { tupT[k] = { r: r, types: [] }; tupOrder.push(k); }
+      if (tupT[k].types.indexOf(n) < 0) tupT[k].types.push(n);
+    });
+  });
+  tupOrder.forEach(function (k) {
+    var m = tupT[k], ty = m.types;
+    var acc = ty.map(function (n) { return 'Type ' + n; });
+    var oth = kNums.filter(function (x) { return ty.indexOf(x) < 0; });
+    var ctx = ['Kwadranten · ' + ty.map(typeCrumb).join(' en ')];
+    if (ty.length > 1) ctx.push('Dit kernkwadrant is identiek bij type ' + ty.join(' en ') + ': beide antwoorden zijn goed.');
+    add({ id: 'kw|who|' + k, grp: 'who', fam: 'kw.who', tab: 'kwadranten', types: ty.slice(), tag: 'Kernkwadrant',
+      q: 'Bij welk type hoort dit kernkwadrant?', quote: kwLine(m.r), answer: acc[0], accept: acc,
+      hard: oth.filter(function (x) { return ty.some(function (t) { return centrumOf[t] === centrumOf[x]; }); }).map(function (x) { return 'Type ' + x; }),
+      dis: oth.map(function (x) { return 'Type ' + x; }), ctx: ctx });
+  });
+  var tupC = {}, tupCo = [];
+  C.forEach(function (c) {
+    (c.kw || []).forEach(function (r) {
+      var k = [r.kk, r.vk, r.al, r.ud].join('|');
+      if (!tupC[k]) { tupC[k] = { r: r, cs: [] }; tupCo.push(k); }
+      if (tupC[k].cs.indexOf(c.key) < 0) tupC[k].cs.push(c.key);
+    });
+  });
+  tupCo.forEach(function (k) {
+    var m = tupC[k];
+    add({ id: 'kwc|who|' + k, grp: 'who', fam: 'kwc.who', tab: 'kwadranten', types: [], centra: m.cs.slice(), tag: 'Kernkwadrant',
+      q: 'Bij welk centrum hoort dit kernkwadrant?', quote: kwLine(m.r), answer: m.cs[0], accept: m.cs.slice(), opts: cKeys.slice(),
+      ctx: ['Kwadranten · Centrum ' + m.cs.join(' en ')] });
+  });
+
+  /* ---------- Coaching ---------- */
+  var dos = D.DOSEER || [];
+  var occDb = countBy(dos, function (d) { return d.b; });
+  var occDl = countBy(dos, function (d) { return d.l; });
+  dos.forEach(function (d) {
+    var label = d.l + ': ' + d.t;
+    if (occDb[d.b] === 1) {
+      add({ id: 'co|d2t|' + d.t, fam: 'co.dos', tab: 'coaching', tag: 'Coaching · DOSEER',
+        q: 'Welke stap van het DOSEER-model wordt hier beschreven?', quote: d.b, answer: label, accept: [label, d.t],
+        dis: dos.map(function (x) { return x.l + ': ' + x.t; }), ctx: ['Coaching · DOSEER-model', label] });
+    }
+    if (occDl[d.l] === 1) {
+      add({ id: 'co|l2t|' + d.l, fam: 'co.dos', tab: 'coaching', tag: 'Coaching · DOSEER',
+        q: 'Waar staat de letter ' + d.l + ' in DOSEER voor?', answer: d.t,
+        dis: dos.map(function (x) { return x.t; }), ctx: ['Coaching · DOSEER-model', label, d.b] });
+    } else skip('co|l2t|' + d.l, 'letter komt vaker voor in DOSEER');
+  });
+  var reg = D.REGELS || [];
+  reg.forEach(function (r, i) {
+    add({ id: 'co|r2t|' + r.t, fam: 'co.reg', tab: 'coaching', tag: 'Coaching · 10 regels van typeren',
+      q: 'Bij welke regel van typeren hoort deze toelichting?', quote: r.b, answer: r.t,
+      dis: reg.map(function (x) { return x.t; }), ctx: ['Coaching · Regel ' + (i + 1) + ' van ' + reg.length, r.t] });
+  });
+
+  /* ---------- Kwadranten invullen ---------- */
+  function fillItems(rows, idp, types, centra, tagTxt, crumb, groupKey, allRows) {
+    rows.forEach(function (r) {
+      var givenOk = ['kk', 'vk', 'al', 'ud'].filter(function (f) {
+        return rows.filter(function (x) { return x[f] === r[f]; }).length === 1;
+      });
+      if (!givenOk.length) { skip(idp + '|' + r.kk, 'kernkwadrant niet eenduidig te herkennen'); return; }
+      add({ id: idp + '|' + r.kk + '|' + r.vk, grp: 'fill', fam: 'fill.' + groupKey, tab: 'kwadranten', types: types.slice(), centra: centra.slice(),
+        tag: tagTxt, q: 'Vul het kernkwadrant aan', answer: kwLine(r), row: r, rows: rows, allRows: allRows, givenOk: givenOk,
+        ctx: [crumb, kwLine(r)] });
+    });
+  }
+  var everyRow = [];
+  kNums.forEach(function (n) { everyRow = everyRow.concat(KW[n]); });
+  C.forEach(function (c) { everyRow = everyRow.concat(c.kw || []); });
+  kNums.forEach(function (n) {
+    fillItems(KW[n], 'fill|' + n, [n], [], 'Kwadranten invullen · Type ' + n, 'Kwadranten · ' + typeCrumb(n), 't', everyRow);
+  });
+  C.forEach(function (c) {
+    fillItems(c.kw || [], 'fillc|' + c.key, [], [c.key], 'Kwadranten invullen · Centrum ' + c.key,
+      'Kwadranten · Centrum ' + c.key + ' (' + (c.titel || '') + ')', 'c', everyRow);
+  });
+
+  /* ---------- Koppelen: paren en groepen ---------- */
+  function mgroup(id, tab, title, crumb, pairs) {
+    var seenL = {}, seenR = {};
+    pairs = pairs.filter(function (p) {
+      var l = String(p.l).toLowerCase(), r = String(p.r).toLowerCase();
+      if (seenL[l] || seenR[r]) return false;
+      seenL[l] = seenR[r] = 1;
+      return true;
+    });
+    if (pairs.length < 3) { if (pairs.length) skip('mg|' + id, 'te weinig paren om te koppelen'); return; }
+    pairs.forEach(function (p) {
+      p.grp = 'pair'; p.fam = id; p.tab = tab; fixCentra(p);
+      if (ids[p.id]) return;
+      ids[p.id] = 1;
+      all.push(p);
+    });
+    var g = { id: id, tab: tab, title: title, crumb: crumb, pairs: pairs };
+    MG.push(g); MGMAP[id] = g;
+  }
+  VK.forEach(function (k) {
+    var lower = VN[k].toLowerCase();
+    var pairs = [];
+    T.forEach(function (t) {
+      var v = t[k];
+      if (!v || !v.naam) return;
+      if (T.filter(function (x) { return x[k] && x[k].naam === v.naam; }).length !== 1) return;
+      pairs.push({ id: 'mp|vc|' + k + '|' + t.num, l: 'Type ' + t.num, r: v.naam, types: [t.num],
+        ctx: ['V-Cirkel · ' + typeCrumb(t.num), VN[k] + ': ' + v.naam] });
+    });
+    mgroup('m.vc.' + k, 'vcirkel', 'Koppel elk type aan zijn ' + lower, 'V-Cirkel · ' + VN[k], pairs);
+  });
+  SECS.forEach(function (sec) {
+    if (sec.key === 'basis') return;
+    var occ = countBy([].concat.apply([], pNums.map(function (n) { return (P[n][sec.key] || []).map(function (x) { return x.v; }); })), function (x) { return x; });
+    var pairs = [];
+    pNums.forEach(function (n) {
+      (P[n][sec.key] || []).forEach(function (bp) {
+        if (occ[bp.v] !== 1) return;
+        pairs.push({ id: 'mp|pol|' + sec.key + '|' + bp.v, l: bp.v, r: 'Type ' + n, types: [n],
+          ctx: ['Polariteiten · ' + sec.label + ' · ' + typeCrumb(n), bp.v + ' (verleiding) tegenover ' + bp.vm + ' (vermijding)'] });
+      });
+    });
+    mgroup('m.pol.' + sec.key, 'polariteiten', 'Koppel aan het type (verleidingskant): ' + sec.label.toLowerCase(), 'Polariteiten · ' + sec.label, pairs);
+  });
+  (function () {
+    var pairs = [];
+    bKeys.forEach(function (K) {
+      (B[K].rijen || []).forEach(function (r) {
+        if (occL[r.l] !== 1) return;
+        pairs.push({ id: 'mp|def|' + K + '|' + r.l, l: r.l, r: K, types: [],
+          ctx: ['Polariteiten · Basispolariteiten · ' + B[K].titel, 'Tegenpool hiervan: ' + r.r] });
+      });
+    });
+    mgroup('m.def', 'polariteiten', 'Koppel het herkenningspunt aan de basispolariteit', 'Polariteiten · Basispolariteiten', pairs);
+  })();
+  kNums.forEach(function (n) {
+    KWF.forEach(function (f) {
+      var pairs = KW[n].map(function (r) {
+        return { id: 'mp|kw|' + n + '|' + f[0] + '|' + r.kk, l: r.kk, r: r[f[0]], types: [n], ctx: ['Kwadranten · ' + typeCrumb(n), kwLine(r)] };
+      });
+      mgroup('m.kw.' + n + '.' + f[0], 'kwadranten', 'Type ' + n + ': koppel de kernkwaliteit aan de ' + f[1].toLowerCase(), 'Kwadranten · ' + typeCrumb(n), pairs);
+    });
+  });
+  C.forEach(function (c) {
+    KWF.forEach(function (f) {
+      var pairs = (c.kw || []).map(function (r) {
+        return { id: 'mp|kwc|' + c.key + '|' + f[0] + '|' + r.kk, l: r.kk, r: r[f[0]], types: [], centra: [c.key], ctx: ['Kwadranten · Centrum ' + c.key, kwLine(r)] };
+      });
+      mgroup('m.kwc.' + c.key + '.' + f[0], 'kwadranten', 'Centrum ' + c.key + ': koppel de kernkwaliteit aan de ' + f[1].toLowerCase(), 'Kwadranten · Centrum ' + c.key, pairs);
+    });
+  });
+
+  return { all: all, skipped: skipped };
+}
+
+/* ============================================================
+   Datacontrole: meldt, past niets aan
+   ============================================================ */
+function dataChecks(D, skipped) {
+  var n = [];
+  if (D.missing && D.missing.length) n.push('Niet gevonden in ' + APP_URL + ': ' + D.missing.join(', ') + '. De bijbehorende vragen ontbreken.');
+  var T = D.TYPES || [];
+  T.forEach(function (t) {
+    VK.forEach(function (k) {
+      var v = t[k];
+      if (!v || !v.naam || !v.zin || !(v.bullets && v.bullets.length)) n.push('Type ' + t.num + ': onvolledige gegevens bij ' + VN[k] + '.');
+    });
+    if (D.POL && !D.POL[t.num]) n.push('Type ' + t.num + ' ontbreekt in de polariteiten.');
+    if (D.KW && !D.KW[t.num]) n.push('Type ' + t.num + ' ontbreekt in de kwadranten.');
+  });
+  (D.CENTRA || []).forEach(function (c) {
+    (c.types || []).forEach(function (num) {
+      var t = findBy(T, function (x) { return x.num === num; });
+      if (t && String(t.cat).toLowerCase() !== (c.key + 'type').toLowerCase())
+        n.push('Type ' + num + ' staat als "' + t.cat + '" bij de types, maar onder centrum ' + c.key + ' bij de kenmerken.');
+    });
+  });
+  var seenKw = {};
+  Object.keys(D.KW || {}).forEach(function (num) {
+    D.KW[num].forEach(function (r) { var k = [r.kk, r.vk, r.al, r.ud].join('|'); (seenKw[k] = seenKw[k] || []).push(num); });
+  });
+  Object.keys(seenKw).forEach(function (k) {
+    if (seenKw[k].length > 1) n.push('Identiek kernkwadrant bij type ' + seenKw[k].join(' en ') + ' (' + k.split('|').join(' / ') + '). Bij de vraag "welk type" worden alle typen met dit kwadrant goedgekeurd.');
+  });
+  var norm = function (s) { return String(s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[\s\/\-]+/g, ''); };
+  var variants = {};
+  var addV = function (s) { if (!s || typeof s !== 'string' || s.length > 40) return; var k = norm(s); (variants[k] = variants[k] || {})[s] = 1; };
+  T.forEach(function (t) { VK.forEach(function (k) { if (t[k]) addV(t[k].naam); }); });
+  Object.keys(D.POL || {}).forEach(function (num) { SECS.forEach(function (s) { (D.POL[num][s.key] || []).forEach(function (bp) { addV(bp.v); addV(bp.vm); }); }); });
+  Object.keys(D.KW || {}).forEach(function (num) { D.KW[num].forEach(function (r) { addV(r.kk); addV(r.vk); addV(r.al); addV(r.ud); }); });
+  (D.CENTRA || []).forEach(function (c) { (c.kw || []).forEach(function (r) { addV(r.kk); addV(r.vk); addV(r.al); addV(r.ud); }); });
+  Object.keys(variants).forEach(function (k) {
+    var forms = Object.keys(variants[k]);
+    if (forms.length > 1) n.push('Verschillende schrijfwijze van hetzelfde begrip: ' + forms.map(function (f) { return '"' + f + '"'; }).join(' en ') + '.');
+  });
+  SECS.forEach(function (sec) {
+    var m = {};
+    Object.keys(D.POL || {}).forEach(function (num) {
+      (D.POL[num][sec.key] || []).forEach(function (bp) { (m[bp.v] = m[bp.v] || {})[bp.vm] = 1; });
+    });
+    Object.keys(m).forEach(function (v) {
+      var vs = Object.keys(m[v]);
+      if (vs.length > 1) n.push(sec.label + ': "' + v + '" heeft verschillende tegenpolen (' + vs.join(', ') + ').');
+    });
+  });
+  var B = D.BASIS || {};
+  Object.keys(B).forEach(function (K) {
+    var parts = String(B[K].titel || '').split(' / ');
+    var M = B[parts[1]];
+    if (!M) { n.push('Basisdefinitie "' + K + '": tegenpool "' + parts[1] + '" ontbreekt.'); return; }
+    if (K > parts[1]) return;
+    if ((M.rijen || []).length !== (B[K].rijen || []).length) { n.push('Basisdefinities "' + K + '" en "' + parts[1] + '" hebben een verschillend aantal rijen.'); return; }
+    B[K].rijen.forEach(function (r, i) {
+      if (M.rijen[i].l !== r.r || M.rijen[i].r !== r.l) n.push('Basisdefinities "' + K + '" en "' + parts[1] + '": rij ' + (i + 1) + ' is niet elkaars spiegelbeeld.');
+    });
+  });
+  var used = {};
+  Object.keys(D.POL || {}).forEach(function (num) { (D.POL[num].basis || []).forEach(function (bp) { used[bp.v] = 1; used[bp.vm] = 1; }); });
+  Object.keys(used).forEach(function (u) { if (D.BASIS && !B[u]) n.push('Basispolariteit "' + u + '" heeft geen definitie (herkenningspunten).'); });
+  if (skipped && skipped.length) n.push(skipped.length + ' mogelijke vragen overgeslagen omdat het antwoord niet eenduidig is of er te weinig afleiders zijn.');
+  return n;
+}
+
+/* ============================================================
+   Sessie, Leitner en statistieken
+   ============================================================ */
+var DATA = null, SRC = null, ALL = [], SKIPPED = [], NOTES = [];
+var view = 'load', SES = null, loadErr = null;
+
+function inScope(q, p) {
+  if (p.tabs.length && p.tabs.indexOf(q.tab) < 0) return false;
+  if (p.types.length || p.centra.length) {
+    var ok = false;
+    (q.types || []).forEach(function (n) { if (p.types.indexOf(n) >= 0) ok = true; });
+    (q.centra || []).forEach(function (c) { if (p.centra.indexOf(c) >= 0) ok = true; });
+    if (!ok) return false;
+  }
+  return true;
+}
+function boxOf(q) { var s = ST.q[q.id]; return s ? s.b : 0; }
+function isWeak(q) {
+  if (q.pairs) return q.pairs.some(isWeak);
+  var s = ST.q[q.id];
+  return !!(s && s.s > 0 && (s.b <= 2 || s.c / s.s < 0.7));
+}
+function baseWeight(q) {
+  var s = ST.q[q.id], b = s ? s.b : 0;
+  var w = BOXW[b] != null ? BOXW[b] : 1;
+  if (s && Date.now() - s.t < 300000) w *= 0.2;
+  return w;
+}
+function weightOf(q, famN) {
+  var w;
+  if (q.pairs) { w = q.pairs.reduce(function (a, x) { return a + baseWeight(x); }, 0) / q.pairs.length; }
+  else w = baseWeight(q);
+  return w / Math.sqrt(famN[q.fam] || 1);
+}
+function sample(pool, n) {
+  var famN = countBy(pool, function (q) { return q.fam; });
+  var items = pool.map(function (q) { return { q: q, w: weightOf(q, famN) }; });
+  var out = [];
+  while (out.length < n && items.length) {
+    var tot = items.reduce(function (a, x) { return a + x.w; }, 0);
+    var r = Math.random() * tot, i = 0;
+    for (; i < items.length - 1; i++) { r -= items[i].w; if (r <= 0) break; }
+    out.push(items[i].q);
+    items.splice(i, 1);
+  }
+  return out;
+}
+function record(q, ok) {
+  var s = ST.q[q.id] || (ST.q[q.id] = { b: 0, s: 0, c: 0, t: 0 });
+  s.s++;
+  if (ok) { s.c++; s.b = s.b < 1 ? 2 : Math.min(5, s.b + 1); } else s.b = 1;
+  s.t = Date.now();
+  saveState();
+}
+function aggregate(list) {
+  var r = { n: list.length, seen: 0, att: 0, cor: 0, mast: 0, acc: null };
+  list.forEach(function (q) {
+    var s = ST.q[q.id];
+    if (s) { r.seen++; r.att += s.s; r.cor += s.c; if (s.b >= MASTERED_BOX) r.mast++; }
+  });
+  r.acc = r.att ? r.cor / r.att : null;
+  return r;
+}
+function accCls(a) { return a == null ? 'n' : a >= 0.8 ? 'g' : a >= 0.6 ? 'm' : 'b'; }
+
+/* Pool voor een sessie: gewone items plus "koppelrondes" per groep */
+function buildPool(p) {
+  var kOk = function (g) { return !p.kinds.length || p.kinds.indexOf(g) >= 0; };
+  var pool = ALL.filter(function (q) { return q.grp !== 'pair' && kOk(q.grp) && inScope(q, p); });
+  if (kOk('match')) {
+    MG.forEach(function (g) {
+      var ins = g.pairs.filter(function (x) { return inScope(x, p); });
+      if (!ins.length) return;
+      var slots = Math.max(1, Math.min(3, Math.floor(ins.length / 4)));
+      for (var i = 0; i < slots; i++) {
+        pool.push({ id: 'mg|' + g.id + '#' + i, grp: 'match', gid: g.id, fam: 'm.' + g.id, tab: g.tab, types: [], centra: [],
+          tag: 'Koppelen', q: g.title, pairs: ins });
+      }
+    });
+  }
+  return pool;
+}
+
+/* ---------- Voorbereiden van een vraag in een bepaalde vorm ---------- */
+function typable(q) { return String((q.accept || [q.answer])[0]).length <= 70; }
+function pickMode(q) {
+  var f = ST.p.form, b = boxOf(q), mode;
+  if (f === 'auto') mode = b <= 1 ? 'mc' : (b <= 3 ? 'typed' : (Math.random() < 0.5 ? 'typed' : 'flip'));
+  else mode = f;
+  if (mode === 'typed' && q.grp !== 'fill' && !typable(q)) mode = 'flip';
+  if (q.grp === 'fill') mode = mode === 'mc' ? 'sb' : (mode === 'typed' ? 'ft' : 'flip');
+  return mode;
+}
+function makeOptions(q) {
+  if (q.opts) return q.opts.slice();
+  var shown = rnd(q.accept);
+  var hard = shuffle(q.hard || []).slice(0, 1);
+  var rest = shuffle(q.dis.filter(function (x) { return hard.indexOf(x) < 0; }));
+  var d = hard.concat(rest).slice(0, 3);
+  if (d.length < 3) {
+    var more = shuffle((q.hard || []).filter(function (x) { return d.indexOf(x) < 0; }));
+    d = d.concat(more).slice(0, 3);
+  }
+  return shuffle([shown].concat(d));
+}
+function pickRound(it) {
+  var g = MGMAP[it.gid], size = Math.min(4, g.pairs.length), out = [], uL = {}, uR = {};
+  function tryAdd(pr) {
+    var l = normTxt(pr.l), r = normTxt(pr.r);
+    if (uL[l] || uR[r]) return false;
+    uL[l] = uR[r] = 1; out.push(pr); return true;
+  }
+  sample(it.pairs, it.pairs.length).forEach(function (pr) { if (out.length < size) tryAdd(pr); });
+  shuffle(g.pairs).forEach(function (pr) { if (out.length < size) tryAdd(pr); });
+  return shuffle(out);
+}
+function fillBank(it, blanks) {
+  var correct = blanks.map(function (f) { return it.row[f]; });
+  var seen = {};
+  correct.forEach(function (c) { seen[normTxt(c)] = 1; });
+  var picks = [];
+  function takeFrom(rows, k) {
+    var cand = [];
+    rows.forEach(function (r) {
+      if (r === it.row) return;
+      blanks.forEach(function (f) { cand.push(r[f]); });
+    });
+    shuffle(cand).forEach(function (w) {
+      if (picks.length >= k || !w) return;
+      var n = normTxt(w);
+      if (seen[n]) return;
+      seen[n] = 1; picks.push(w);
+    });
+  }
+  takeFrom(it.rows, 3);
+  takeFrom(it.allRows, 5);
+  return shuffle(correct.concat(picks)).map(function (t) { return { t: t, used: false }; });
+}
+function prepare(it) {
+  if (it.grp === 'match') {
+    var round = pickRound(it);
+    return { mode: 'match', pairs: round,
+      slots: round.map(function (pr) { return { label: pr.l, ans: pr.r, val: null, ok: null }; }),
+      bank: shuffle(round.map(function (pr) { return { t: pr.r, used: false }; })), active: 0, answered: false };
+  }
+  var mode = pickMode(it);
+  if (it.grp === 'fill') {
+    var given = rnd(it.givenOk);
+    var blanks = ['kk', 'vk', 'al', 'ud'].filter(function (f) { return f !== given; });
+    var base = { given: given, blanks: blanks, answered: false };
+    if (mode === 'sb') {
+      base.mode = 'sb';
+      base.slots = blanks.map(function (f) { return { label: KWL[f], ans: it.row[f], val: null, ok: null }; });
+      base.bank = fillBank(it, blanks); base.active = 0;
+    } else if (mode === 'ft') {
+      base.mode = 'ft'; base.vals = ['', '', '']; base.res = null;
+    } else { base.mode = 'flip'; base.shown = false; }
+    return base;
+  }
+  if (mode === 'mc') return { mode: 'mc', opts: makeOptions(it), chosen: null, answered: false };
+  if (mode === 'typed') return { mode: 'typed', vals: [''], answered: false, ok: null };
+  return { mode: 'flip', shown: false, answered: false };
+}
+function startSession(qs) {
+  if (!qs.length) return;
+  SES = { qs: qs, i: 0, res: [], cur: prepare(qs[0]) };
+  view = 'quiz';
+  render(true);
+}
+function startFromPrefs() {
+  var p = ST.p, pool = buildPool(p);
+  if (p.weak) {
+    var w = pool.filter(isWeak);
+    if (w.length >= 3) pool = w;
+  }
+  startSession(sample(pool, Math.min(p.n, pool.length)));
+}
+function answerText(it) {
+  if (it.grp === 'match') return 'Zie de juiste combinaties';
+  if (it.grp === 'fill') return it.answer;
+  return it.accept.join(' of ');
+}
+
+/* ============================================================
+   Weergave
+   ============================================================ */
+var app = document.getElementById('app');
+
+function header(sub) {
+  return '<div class="header"><div class="header-logo"><div class="logo-dot"></div><div class="hl"><h1>V-Cirkel Toets</h1><p>' + esc(sub) + '</p></div><a class="applink" href="' + APP_URL + '">App</a></div></div>';
+}
+function chip(act, arg, label, on, cls) {
+  return '<button class="chip' + (cls ? ' ' + cls : '') + (on ? ' on' : '') + '" data-act="' + act + '" data-arg="' + esc(arg) + '">' + esc(label) + '</button>';
+}
+function pillAcc(a) { return '<span class="pill ' + accCls(a) + '">' + (a == null ? '-' : pct(a) + '%') + '</span>'; }
+function subName(g) {
+  if (g.t != null) return 'Type ' + g.t;
+  if (g.c != null) return 'Centrum ' + g.c;
+  return '';
+}
+
+function renderDash() {
+  var p = ST.p, h = header('Overhoren op de stof uit de app');
+  var pool = buildPool(p);
+  var b = '';
+  if (!storageOk) b += '<div class="banner warn">Opslag in deze browser is niet beschikbaar (bijvoorbeeld privemodus). Je kunt gewoon oefenen, maar scores gaan verloren zodra je de pagina sluit.</div>';
+  if (SRC && SRC.src === 'cache') b += '<div class="banner warn">' + APP_URL + ' kon nu niet geladen worden. Je oefent met de laatst opgeslagen kopie van ' + esc(new Date(SRC.t).toLocaleString('nl-NL')) + '.</div>';
+  else b += '<div class="banner ok">Vragen automatisch opgebouwd uit ' + APP_URL + ': ' + ALL.filter(function (q) { return q.grp !== 'pair'; }).length + ' vragen en ' + MG.length + ' koppelgroepen.</div>';
+  b += '<div class="content">';
+
+  b += '<div class="card pad"><div class="sec-title">Nieuwe sessie</div>';
+  b += '<div class="lbl">Type (waar wil je op oefenen?)</div><div class="chips">' + chip('clrtyp', '', 'Alle', !p.types.length) +
+    [1, 2, 3, 4, 5, 6, 7, 8, 9].map(function (n) { return chip('typ', String(n), String(n), p.types.indexOf(n) >= 0, 'num'); }).join('') + '</div>';
+  b += '<div class="lbl">Centrum</div><div class="chips">' + chip('clrcen', '', 'Alle', !p.centra.length) +
+    CENTRA_KEYS.map(function (c) { return chip('cen', c, c, p.centra.indexOf(c) >= 0); }).join('') + '</div>';
+  if (p.types.length || p.centra.length) b += '<div class="sub" style="margin-top:6px">Je krijgt alleen vragen die bij deze types of centra horen. Vragen zonder type of centrum (coaching, herkenningspunten van de basispolariteiten) vallen dan af.</div>';
+  b += '<div class="lbl">Onderdeel (tabblad)</div><div class="chips">' + chip('clrtab', '', 'Alle', !p.tabs.length) +
+    TABS.map(function (t) { return chip('tab', t.k, t.n, p.tabs.indexOf(t.k) >= 0); }).join('') + '</div>';
+  b += '<div class="lbl">Vraagsoort</div><div class="chips">' + chip('clrknd', '', 'Alle', !p.kinds.length) +
+    GROUPS.map(function (g) { return chip('knd', g.k, g.n, p.kinds.indexOf(g.k) >= 0); }).join('') + '</div>';
+  b += '<div class="lbl">Antwoordvorm</div><div class="chips">' + FORMS.map(function (f) { return chip('form', f.k, f.n, p.form === f.k); }).join('') + '</div>';
+  b += '<div class="sub" style="margin-top:6px">' + esc(FORM_HELP[p.form]) + '</div>';
+  b += '<div class="lbl">Aantal vragen</div><div class="chips">' + [10, 20, 40].map(function (n) { return chip('n', String(n), String(n), p.n === n, 'num'); }).join('') + '</div>';
+  b += '<label class="toggle"><input type="checkbox" data-act="weak"' + (p.weak ? ' checked' : '') + '>Focus op zwakke vragen</label>';
+  b += '<label class="toggle"><input type="checkbox" data-act="ign"' + (p.ign ? ' checked' : '') + '>Accenten negeren bij typen (ë en e tellen als gelijk)</label>';
+  var cnt = pool.length;
+  b += '<button class="btn" data-act="start"' + (cnt ? '' : ' disabled') + '>' + (cnt ? 'Start: ' + Math.min(p.n, cnt) + ' van ' + cnt + ' vragen' : 'Geen vragen in deze selectie') + '</button>';
+  b += '</div>';
+
+  b += '<div class="card pad"><div class="sec-title">Scores per onderdeel</div><div class="sub">Balk = beheerst (drie keer achter elkaar goed). Percentage = goede antwoorden.</div>';
+  var tot = aggregate(ALL);
+  b += scoreRow('Alles', tot);
+  TABS.forEach(function (t) { b += scoreRow(t.n, aggregate(ALL.filter(function (q) { return q.tab === t.k; }))); });
+  b += '</div>';
+
+  b += '<div class="card pad"><div class="sec-title">Scores per type en centrum</div><div class="sub">Tik om dit type of centrum aan je selectie toe te voegen of weg te halen.</div><div class="tiles">';
+  CENTRA_KEYS.forEach(function (c) {
+    var a = aggregate(ALL.filter(function (q) { return q.centra.indexOf(c) >= 0; }));
+    b += tile('cen', c, c, a, p.centra.indexOf(c) >= 0);
+  });
+  b += '</div><div class="tiles">';
+  [1, 2, 3, 4, 5, 6, 7, 8, 9].forEach(function (n) {
+    var a = aggregate(ALL.filter(function (q) { return q.types.indexOf(n) >= 0; }));
+    b += tile('typ', String(n), 'Type ' + n, a, p.types.indexOf(n) >= 0);
+  });
+  b += '</div></div>';
+
+  var groups = weakGroups();
+  b += '<div class="card pad"><div class="sec-title">Zwakke onderdelen</div>';
+  if (!groups.length) b += '<div class="sub" style="margin-top:6px">Nog niets zwaks gevonden. Zodra je ergens onder de 80% zit, verschijnt het hier.</div>';
+  else {
+    b += '<div class="sub">Tik om dit onderdeel direct te oefenen.</div>';
+    groups.slice(0, 6).forEach(function (g, i) {
+      b += '<button class="weak" data-act="weakgo" data-arg="' + i + '"><div class="wn">' + esc(g.label) + '</div><div class="ws">' + g.cor + '/' + g.att + ' goed</div>' + pillAcc(g.acc) + '<div class="go">Oefen</div></button>';
+    });
+  }
+  b += '</div>';
+
+  var hardQ = ALL.filter(function (q) { var s = ST.q[q.id]; return s && s.s - s.c > 0; })
+    .sort(function (x, y) { var a = ST.q[x.id], c = ST.q[y.id]; return (c.s - c.c) - (a.s - a.c) || a.b - c.b; }).slice(0, 5);
+  if (hardQ.length) {
+    b += '<div class="card pad"><div class="sec-title">Lastigste vragen</div>';
+    hardQ.forEach(function (q) {
+      var s = ST.q[q.id];
+      var txt = q.grp === 'pair' ? q.l + ' hoort bij ' + q.r : q.q + (q.quote ? ' ' + q.quote : '');
+      b += '<div class="hard"><b>' + (s.s - s.c) + 'x fout</b> van ' + s.s + ' · ' + esc(trunc(txt, 110)) + '</div>';
+    });
+    b += '</div>';
+  }
+
+  b += '<div class="card"><details><summary>Datacontrole (' + NOTES.length + ')</summary><div class="dbody">';
+  if (!NOTES.length) b += '<div class="sub">Geen opvallendheden gevonden in de data.</div>';
+  else {
+    b += '<div class="sub" style="margin-bottom:6px">Automatisch gevonden in de data van de app. Er wordt niets aangepast, controleer het zelf bij je documenten.</div>';
+    NOTES.forEach(function (x) { b += '<div class="note">' + esc(x) + '</div>'; });
+  }
+  b += '</div></details></div>';
+
+  b += '<div class="card pad"><div class="sec-title">Beheer</div><div class="sub">' +
+    (storageOk ? 'Scores en voortgang staan op dit apparaat in deze browser.' : 'Er wordt niets bewaard (opslag niet beschikbaar).') +
+    '</div><button class="btn danger" data-act="reset">Reset scores en voortgang</button></div>';
+  b += '</div>';
+  app.innerHTML = h + b;
+}
+function scoreRow(name, a) {
+  var w = a.n ? Math.round(a.mast / a.n * 100) : 0;
+  return '<div class="srow"><div class="top"><div class="nm">' + esc(name) + pillAcc(a.acc) + '</div><div class="st">' +
+    a.att + ' antwoorden · beheerst ' + a.mast + '/' + a.n + '</div></div><div class="bar"><i style="width:' + w + '%"></i></div></div>';
+}
+function tile(act, arg, name, a, sel) {
+  return '<button class="tile ' + accCls(a.acc) + (sel ? ' sel' : '') + '" data-act="' + act + '" data-arg="' + esc(arg) + '"><div class="tn">' + esc(name) +
+    '</div><div class="tp">' + (a.acc == null ? '-' : pct(a.acc) + '%') + '</div><div class="ts">' + a.att + ' antw.</div></button>';
+}
+var WEAKG = [];
+function weakGroups() {
+  var m = {};
+  ALL.forEach(function (q) {
+    var s = ST.q[q.id];
+    if (!s) return;
+    var t = q.types.length ? q.types[0] : null;
+    var c = (t == null && q.centra.length) ? q.centra[0] : null;
+    var key = q.tab + '|' + t + '|' + c;
+    var g = m[key] || (m[key] = { tab: q.tab, t: t, c: c, att: 0, cor: 0 });
+    g.att += s.s; g.cor += s.c;
+  });
+  var tabName = {}; TABS.forEach(function (t) { tabName[t.k] = t.n; });
+  WEAKG = Object.keys(m).map(function (k) {
+    var g = m[k]; g.acc = g.att ? g.cor / g.att : null;
+    g.label = (subName(g) ? subName(g) + ' · ' : '') + tabName[g.tab];
+    return g;
+  }).filter(function (g) { return g.att >= 2 && g.acc < 0.8; })
+    .sort(function (a, b) { return a.acc - b.acc || b.att - a.att; });
+  return WEAKG;
+}
+
+/* ---------- Vraagscherm ---------- */
+function qHead() {
+  var n = SES.qs.length, cur = SES.cur;
+  var good = SES.res.filter(function (r) { return r.ok; }).length;
+  return '<div class="header qhead"><div class="qtop"><button class="x" data-act="quit">Stop</button><div class="qc">Vraag ' + (SES.i + 1) + ' van ' + n +
+    '</div><div class="qs">' + good + ' goed</div></div><div class="bar"><i style="width:' + Math.round((SES.i + (cur.answered ? 1 : 0)) / n * 100) + '%"></i></div></div>';
+}
+function qCard(q, cur) {
+  var tag = (q.tag || '') + (cur && MODE_LABEL[cur.mode] ? ' · ' + MODE_LABEL[cur.mode] : '');
+  var quote = q.quote;
+  if (q.grp === 'fill') quote = KWL[cur.given] + ': ' + q.row[cur.given];
+  return '<div class="card pad"><div class="qtag">' + esc(tag) + '</div><div class="qtext">' + esc(q.q) + '</div>' +
+    (quote ? '<div class="qquote">' + esc(quote) + '</div>' : '') + '</div>';
+}
+function ctxHtml(q, extra) {
+  var ctx = (q.ctx || []).filter(Boolean);
+  var h = '';
+  if (ctx.length) h += '<div class="fc"><b>' + esc(ctx[0]) + '</b>' + ctx.slice(1).map(function (x) { return '<br>' + esc(x); }).join('') + '</div>';
+  if (extra) h += extra;
+  return h;
+}
+function nextBtn() { return '<button class="btn" data-act="next">' + (SES.i + 1 >= SES.qs.length ? 'Bekijk resultaat' : 'Volgende vraag') + '</button>'; }
+function ftInputs(cur, q, answered) {
+  var h = '';
+  cur.blanks.forEach(function (f, i) {
+    var cls = '';
+    if (answered) cls = cur.res[i] ? ' good' : ' bad';
+    h += '<div class="irow"><div class="il">' + esc(KWL[f]) + '</div><input class="inp' + cls + '" data-in="' + i + '" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" value="' + esc(cur.vals[i]) + '"' + (answered ? ' disabled' : '') + '>' +
+      (answered && !cur.res[i] ? '<div class="igood">Goed: ' + esc(q.row[f]) + '</div>' : '') + '</div>';
+  });
+  return h;
+}
+function sbHtml(cur, answered) {
+  var h = '<div class="slots">';
+  cur.slots.forEach(function (s, i) {
+    var cls = '';
+    if (answered) cls = s.ok ? ' good' : ' bad';
+    else if (i === cur.active && s.val == null) cls = ' act';
+    var val = s.val == null ? '<span class="ph">tik hierna een antwoord</span>' : esc(cur.bank[s.val].t);
+    h += '<button class="slot' + cls + '" data-act="slot" data-arg="' + i + '"><span class="sl">' + esc(s.label) + '</span><span class="sv">' + val + '</span>' +
+      (answered && !s.ok ? '<span class="igood">Goed: ' + esc(s.ans) + '</span>' : '') + '</button>';
+  });
+  h += '</div>';
+  if (!answered) {
+    h += '<div class="bank">';
+    cur.bank.forEach(function (w, j) { h += '<button class="bword' + (w.used ? ' used' : '') + '" data-act="bank" data-arg="' + j + '">' + esc(w.t) + '</button>'; });
+    h += '</div>';
+    var all = cur.slots.every(function (s) { return s.val != null; });
+    h += '<button class="btn" id="chk" data-act="check"' + (all ? '' : ' disabled') + '>Controleer</button>';
+  }
+  return h;
+}
+
+function renderQuiz() {
+  var q = SES.qs[SES.i], cur = SES.cur, n = SES.qs.length;
+  var h = qHead(), b = '<div class="content">';
+  if (cur.mode === 'match') {
+    b += '<div class="card pad"><div class="qtag">' + esc('Koppelen') + '</div><div class="qtext">' + esc(q.q) + '</div><div class="sub" style="margin-top:6px">Tik op een vakje en kies daarna het antwoord dat erbij hoort.</div></div>';
+  } else b += qCard(q, cur);
+
+  if (cur.mode === 'mc') {
+    b += '<div class="opts' + (cur.answered ? ' locked' : '') + '">';
+    cur.opts.forEach(function (o, i) {
+      var cls = '';
+      if (cur.answered) {
+        if (q.accept.indexOf(o) >= 0) cls = ' good';
+        else if (i === cur.chosen) cls = ' bad';
+        else cls = ' dim';
+      }
+      b += '<button class="opt' + cls + '" data-act="pick" data-arg="' + i + '"><span class="olet">' + String.fromCharCode(65 + i) + '</span><span>' + esc(o) + '</span></button>';
+    });
+    b += '</div>';
+    if (cur.answered) {
+      var ok = q.accept.indexOf(cur.opts[cur.chosen]) >= 0;
+      b += '<div class="fb ' + (ok ? 'good' : 'bad') + '" id="fb"><div class="fh">' + (ok ? 'Goed!' : 'Niet goed') + '</div>';
+      b += '<div class="fa">Juiste antwoord: <b>' + esc(answerText(q)) + '</b>' + (ok ? '' : '<br>Jouw keuze: ' + esc(cur.opts[cur.chosen])) + '</div>';
+      b += ctxHtml(q, ok ? '' : '<div class="fc">Deze vraag komt vaker terug.</div>') + nextBtn() + '</div>';
+    }
+  } else if (cur.mode === 'typed') {
+    b += '<div class="irow"><input class="inp' + (cur.answered ? (cur.ok ? ' good' : ' bad') : '') + '" data-in="0" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Typ je antwoord" value="' + esc(cur.vals[0]) + '"' + (cur.answered ? ' disabled' : '') + '></div>';
+    if (!cur.answered) b += '<button class="btn" id="chk" data-act="check"' + (cur.vals[0].trim() ? '' : ' disabled') + '>Controleer</button><div class="sub center" style="margin-top:8px">Hoofdletters en spaties maken niet uit.</div>';
+    else {
+      b += '<div class="fb ' + (cur.ok ? 'good' : 'bad') + '" id="fb"><div class="fh">' + (cur.ok ? 'Goed!' : 'Niet goed') + '</div>';
+      b += '<div class="fa">Juiste antwoord: <b>' + esc(answerText(q)) + '</b>' + (cur.ok ? '' : '<br>Jouw antwoord: ' + esc(cur.vals[0])) + '</div>';
+      b += ctxHtml(q, cur.ok ? '' : '<div class="fc">Deze vraag komt vaker terug, eerst weer in een makkelijkere vorm.</div>') + nextBtn() + '</div>';
+    }
+  } else if (cur.mode === 'flip') {
+    if (!cur.shown) {
+      b += '<div class="card pad center"><div class="sub">Bedenk eerst je antwoord, draai dan het kaartje om.</div></div><button class="btn" data-act="reveal">Draai kaartje om</button>';
+    } else {
+      b += '<div class="fb good" id="fb" style="background:var(--orange-light)"><div class="fh" style="color:var(--orange)">Antwoord</div>';
+      if (q.grp === 'fill') {
+        b += '<div class="fa">' + ['kk', 'vk', 'al', 'ud'].map(function (f) { return esc(KWL[f]) + ': <b>' + esc(q.row[f]) + '</b>'; }).join('<br>') + '</div>';
+      } else b += '<div class="fa"><b>' + esc(answerText(q)) + '</b></div>';
+      b += ctxHtml(q) + '<div class="lbl" style="margin-top:12px">Wist je het?</div><div class="two"><button class="btn good2" data-act="self" data-arg="1">Wist ik</button><button class="btn bad2" data-act="self" data-arg="0">Wist ik niet</button></div></div>';
+    }
+  } else if (cur.mode === 'ft') {
+    b += ftInputs(cur, q, cur.answered);
+    if (!cur.answered) {
+      b += '<button class="btn" id="chk" data-act="check"' + (cur.vals.every(function (v) { return v.trim(); }) ? '' : ' disabled') + '>Controleer</button><div class="sub center" style="margin-top:8px">Hoofdletters en spaties maken niet uit.</div>';
+    } else {
+      var okk = cur.res.every(Boolean), nk = cur.res.filter(Boolean).length;
+      b += '<div class="fb ' + (okk ? 'good' : 'bad') + '" id="fb"><div class="fh">' + (okk ? 'Goed!' : nk + ' van ' + cur.res.length + ' goed') + '</div>';
+      b += ctxHtml(q, okk ? '' : '<div class="fc">Dit kernkwadrant komt vaker terug.</div>') + nextBtn() + '</div>';
+    }
+  } else if (cur.mode === 'sb' || cur.mode === 'match') {
+    b += sbHtml(cur, cur.answered);
+    if (cur.answered) {
+      var okc = cur.slots.filter(function (s) { return s.ok; }).length, tot = cur.slots.length;
+      b += '<div class="fb ' + (okc === tot ? 'good' : 'bad') + '" id="fb"><div class="fh">' + (okc === tot ? 'Goed!' : okc + ' van ' + tot + ' goed') + '</div>';
+      if (cur.mode === 'match') {
+        b += '<div class="fa">' + cur.pairs.map(function (pr) { return esc(pr.l) + ' hoort bij <b>' + esc(pr.r) + '</b>'; }).join('<br>') + '</div>';
+        b += '<div class="fc"><b>' + esc(MGMAP[q.gid].crumb) + '</b></div>';
+      } else b += ctxHtml(q);
+      if (okc !== tot) b += '<div class="fc">Wat fout ging komt vaker terug.</div>';
+      b += nextBtn() + '</div>';
+    }
+  }
+  b += '</div>';
+  app.innerHTML = h + b;
+  if (cur.answered || (cur.mode === 'flip' && cur.shown)) { var f = document.getElementById('fb'); if (f && f.scrollIntoView) f.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+  if ((cur.mode === 'typed' || cur.mode === 'ft') && !cur.answered) {
+    var inp = app.querySelector('.inp');
+    if (inp && inp.focus) { try { inp.focus(); } catch (e) {} }
+  }
+}
+
+function renderEnd() {
+  var n = SES.res.length, good = SES.res.filter(function (r) { return r.ok; }).length;
+  var missed = SES.res.filter(function (r) { return !r.ok; });
+  var b = '<div class="content"><div class="card pad center"><div class="sub">Resultaat</div><div class="big">' + good + ' / ' + n + '</div><div class="sub">' + (n ? pct(good / n) : 0) + '% goed</div></div>';
+  if (missed.length) {
+    b += '<div class="card pad"><div class="sec-title">Gemist (' + missed.length + ')</div>';
+    missed.forEach(function (r) {
+      var qt = r.q.grp === 'match' ? r.q.q : (r.q.q + (r.q.quote ? ' ' + r.q.quote : '') + (r.q.grp === 'fill' ? ' (' + r.q.row[r.given] + ')' : ''));
+      var at = r.q.grp === 'match' ? r.pairs.map(function (pr) { return pr.l + ' = ' + pr.r; }).join(' · ') : answerText(r.q);
+      b += '<div class="miss"><div class="mq">' + esc(qt) + '</div><div class="ma">' + esc(at) + '</div></div>';
+    });
+    b += '</div>';
+    b += '<button class="btn" data-act="again">Oefen de gemiste vragen opnieuw</button>';
+  }
+  b += '<button class="btn ' + (missed.length ? 'line' : '') + '" data-act="more">Nog een ronde met dezelfde selectie</button>';
+  b += '<button class="btn sec" data-act="dash">Terug naar dashboard</button></div>';
+  app.innerHTML = header('Sessie klaar') + b;
+}
+
+function renderLoadErr() {
+  var msg = loadErr && loadErr.message ? loadErr.message : 'onbekende fout';
+  app.innerHTML = header('Overhoren op de stof uit de app') +
+    '<div class="content"><div class="card pad"><div class="sec-title">De stof kon niet geladen worden</div>' +
+    '<p class="sub" style="margin-top:6px;font-size:13px;line-height:1.5">Deze pagina leest de stof uit <b>' + APP_URL + '</b>. Zorg dat toets.html in dezelfde map staat en open de pagina via https (bijvoorbeeld GitHub Pages), niet als los bestand.<br><br>Melding: ' + esc(msg) + '</p>' +
+    '<button class="btn" data-act="retry">Opnieuw proberen</button></div></div>';
+}
+
+function render(top) {
+  if (view === 'dash') renderDash();
+  else if (view === 'quiz') renderQuiz();
+  else if (view === 'end') renderEnd();
+  else if (view === 'err') renderLoadErr();
+  if (top) window.scrollTo(0, 0);
+}
+
+/* ============================================================
+   Acties
+   ============================================================ */
+function setPref(k, v) { ST.p[k] = v; saveState(); }
+function finish(it, ok, extra) {
+  var cur = SES.cur;
+  cur.answered = true;
+  var r = { q: it, ok: ok };
+  if (extra) for (var k in extra) r[k] = extra[k];
+  SES.res.push(r);
+}
+function advance() {
+  if (SES.i + 1 >= SES.qs.length) { view = 'end'; render(true); }
+  else { SES.i++; SES.cur = prepare(SES.qs[SES.i]); render(true); }
+}
+function refreshCheck() {
+  var btn = document.getElementById('chk');
+  if (!btn || !SES) return;
+  var cur = SES.cur, ok = false;
+  if (cur.mode === 'typed') ok = !!cur.vals[0].trim();
+  else if (cur.mode === 'ft') ok = cur.vals.every(function (v) { return v.trim(); });
+  btn.disabled = !ok;
+}
+function doCheck() {
+  var cur = SES.cur, it = SES.qs[SES.i], ok;
+  if (cur.answered) return;
+  if (cur.mode === 'typed') {
+    if (!cur.vals[0].trim()) return;
+    ok = acceptSet(it).indexOf(normTxt(cur.vals[0])) >= 0;
+    cur.ok = ok; record(it, ok); finish(it, ok);
+  } else if (cur.mode === 'ft') {
+    if (!cur.vals.every(function (v) { return v.trim(); })) return;
+    cur.res = cur.blanks.map(function (f, i) { return normTxt(cur.vals[i]) === normTxt(it.row[f]); });
+    ok = cur.res.every(Boolean); record(it, ok); finish(it, ok, { given: cur.given });
+  } else if (cur.mode === 'sb' || cur.mode === 'match') {
+    if (!cur.slots.every(function (s) { return s.val != null; })) return;
+    cur.slots.forEach(function (s) { s.ok = normTxt(cur.bank[s.val].t) === normTxt(s.ans); });
+    ok = cur.slots.every(function (s) { return s.ok; });
+    if (cur.mode === 'match') { cur.pairs.forEach(function (pr, i) { record(pr, cur.slots[i].ok); }); finish(it, ok, { pairs: cur.pairs }); }
+    else { record(it, ok); finish(it, ok, { given: cur.given }); }
+  }
+  render();
+}
+app.addEventListener('click', function (e) {
+  var t = e.target;
+  while (t && t !== app && !(t.getAttribute && t.getAttribute('data-act'))) t = t.parentNode;
+  if (!t || t === app) return;
+  var act = t.getAttribute('data-act'), arg = t.getAttribute('data-arg');
+  var p = ST.p;
+  if (act === 'weak') { setPref('weak', !!t.checked); return; }
+  if (act === 'ign') { setPref('ign', !!t.checked); return; }
+  if (act === 'tab') { toggleIn(p.tabs, arg); saveState(); render(); }
+  else if (act === 'clrtab') { p.tabs = []; saveState(); render(); }
+  else if (act === 'cen') { toggleIn(p.centra, arg); saveState(); render(); if (t.className.indexOf('tile') >= 0) window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  else if (act === 'clrcen') { p.centra = []; saveState(); render(); }
+  else if (act === 'typ') { toggleIn(p.types, Number(arg)); saveState(); render(); if (t.className.indexOf('tile') >= 0) window.scrollTo({ top: 0, behavior: 'smooth' }); }
+  else if (act === 'clrtyp') { p.types = []; saveState(); render(); }
+  else if (act === 'knd') { toggleIn(p.kinds, arg); saveState(); render(); }
+  else if (act === 'clrknd') { p.kinds = []; saveState(); render(); }
+  else if (act === 'form') { setPref('form', arg); render(); }
+  else if (act === 'n') { setPref('n', Number(arg)); render(); }
+  else if (act === 'start') startFromPrefs();
+  else if (act === 'weakgo') {
+    var g = WEAKG[Number(arg)];
+    if (g) { p.tabs = [g.tab]; p.types = g.t != null ? [g.t] : []; p.centra = g.c != null ? [g.c] : []; p.kinds = []; p.weak = false; saveState(); startFromPrefs(); }
+  }
+  else if (act === 'pick') {
+    var cur = SES.cur;
+    if (cur.answered) return;
+    var q = SES.qs[SES.i], idx = Number(arg), ok = q.accept.indexOf(cur.opts[idx]) >= 0;
+    cur.chosen = idx;
+    record(q, ok); finish(q, ok);
+    render();
+  }
+  else if (act === 'check') doCheck();
+  else if (act === 'reveal') { SES.cur.shown = true; render(); }
+  else if (act === 'self') {
+    var c2 = SES.cur, q2 = SES.qs[SES.i], ok2 = arg === '1';
+    if (c2.answered) return;
+    record(q2, ok2); finish(q2, ok2, { given: c2.given });
+    advance();
+  }
+  else if (act === 'slot') {
+    var c3 = SES.cur, i3 = Number(arg);
+    if (c3.answered) return;
+    var s3 = c3.slots[i3];
+    if (s3.val != null) { c3.bank[s3.val].used = false; s3.val = null; }
+    c3.active = i3;
+    render();
+  }
+  else if (act === 'bank') {
+    var c4 = SES.cur, j = Number(arg);
+    if (c4.answered || c4.bank[j].used) return;
+    var tgt = c4.slots[c4.active] && c4.slots[c4.active].val == null ? c4.active : -1;
+    if (tgt < 0) for (var k = 0; k < c4.slots.length; k++) if (c4.slots[k].val == null) { tgt = k; break; }
+    if (tgt < 0) return;
+    c4.slots[tgt].val = j; c4.bank[j].used = true;
+    var nx = -1;
+    for (var m = 0; m < c4.slots.length; m++) if (c4.slots[m].val == null) { nx = m; break; }
+    c4.active = nx < 0 ? tgt : nx;
+    render();
+  }
+  else if (act === 'next') advance();
+  else if (act === 'quit') {
+    view = SES.res.length ? 'end' : 'dash';
+    render(true);
+  }
+  else if (act === 'again') {
+    var redo = [], seen = {};
+    SES.res.filter(function (r) { return !r.ok; }).forEach(function (r) { if (!seen[r.q.id]) { seen[r.q.id] = 1; redo.push(r.q); } });
+    startSession(shuffle(redo));
+  }
+  else if (act === 'more') startFromPrefs();
+  else if (act === 'dash') { view = 'dash'; render(true); }
+  else if (act === 'reset') {
+    if (window.confirm('Alle scores en voortgang wissen? Dit kan niet ongedaan gemaakt worden.')) {
+      var keepP = ST.p;
+      ST = freshState(); ST.p = keepP;
+      lsDel(STORE_KEY); saveState();
+      render(true);
+    }
+  }
+  else if (act === 'retry') init();
+});
+app.addEventListener('input', function (e) {
+  var t = e.target;
+  if (!t || !t.getAttribute || t.getAttribute('data-in') == null || !SES || !SES.cur || !SES.cur.vals) return;
+  SES.cur.vals[Number(t.getAttribute('data-in'))] = t.value;
+  refreshCheck();
+});
+app.addEventListener('keydown', function (e) {
+  var t = e.target;
+  if (e.key !== 'Enter' || !t || !t.getAttribute || t.getAttribute('data-in') == null || !SES) return;
+  e.preventDefault();
+  var idx = Number(t.getAttribute('data-in')), inputs = app.querySelectorAll('.inp');
+  if (idx + 1 < inputs.length) { inputs[idx + 1].focus(); return; }
+  doCheck();
+});
+
+/* ============================================================
+   Start
+   ============================================================ */
+function init() {
+  view = 'load';
+  loadState();
+  loadData().then(function (res) {
+    DATA = res.D; SRC = res;
+    var g = build(DATA);
+    ALL = g.all; SKIPPED = g.skipped;
+    NOTES = dataChecks(DATA, SKIPPED);
+    if (!ALL.length) throw new Error('Er konden geen vragen uit de data gemaakt worden.');
+    view = 'dash';
+    render(true);
+  }).catch(function (err) {
+    loadErr = err; view = 'err'; render(true);
+  });
+}
+init();
+
+})();
+</script>
+</body>
+</html>
